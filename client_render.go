@@ -1,6 +1,7 @@
 package mermaid
 
 import (
+	_ "embed"
 	"html/template"
 
 	"github.com/yuin/goldmark/ast"
@@ -8,7 +9,11 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-const _defaultMermaidJS = "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+const defaultMermaidJS = "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+
+//go:generate curl -O -L https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+//go:embed mermaid.min.js
+var mermaidJSEmbedded []byte
 
 // ClientRenderer renders Mermaid diagrams as HTML,
 // to be rendered into images client side.
@@ -19,6 +24,7 @@ type ClientRenderer struct {
 	// URL of Mermaid Javascript to be included in the page.
 	//
 	// Defaults to the latest version available on cdn.jsdelivr.net.
+	// "<embed>" uses the embedded source file
 	MermaidJS string
 }
 
@@ -47,16 +53,21 @@ func (*ClientRenderer) Render(w util.BufWriter, src []byte, node ast.Node, enter
 
 // RenderScript renders mermaid.ScriptBlock nodes.
 func (r *ClientRenderer) RenderScript(w util.BufWriter, src []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	mermaidJS := r.MermaidJS
-	if len(mermaidJS) == 0 {
-		mermaidJS = _defaultMermaidJS
-	}
-
 	_ = node.(*ScriptBlock) // sanity check
 	if entering {
-		w.WriteString(`<script src="`)
-		w.WriteString(mermaidJS)
-		w.WriteString(`"></script>`)
+		mermaidJS := r.MermaidJS
+		if mermaidJS == "<embed>" {
+			w.WriteString(`<script>`)
+			w.Write(mermaidJSEmbedded)
+			w.WriteString(`</script>`)
+		} else {
+			if len(mermaidJS) == 0 {
+				mermaidJS = defaultMermaidJS
+			}
+			w.WriteString(`<script src="`)
+			w.WriteString(mermaidJS)
+			w.WriteString(`"></script>`)
+		}
 	} else {
 		w.WriteString("<script>mermaid.initialize({startOnLoad: true});</script>")
 	}
