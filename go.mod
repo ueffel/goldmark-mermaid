@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/stretchr/testify v1.8.1
-	github.com/yuin/goldmark v1.3.4
+	github.com/yuin/goldmark v1.5.4
 	gopkg.in/yaml.v3 v3.0.1
 )
 
