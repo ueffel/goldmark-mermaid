@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ '*' ]
 
 jobs:
 
@@ -13,16 +13,16 @@ jobs:
 
     strategy:
       matrix:
-        go: ["1.18.x", "1.19.x"]
+        go: ["1.19.x", "1.20.x"]
         include:
-        - go: 1.19.x
+        - go: 1.20.x
           latest: true
 
     steps:
     - uses: actions/checkout@v3
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ matrix.go }}
         cache: true
