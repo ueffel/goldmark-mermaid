@@ -3,8 +3,8 @@ module go.abhg.dev/goldmark/mermaid
 go 1.19
 
 require (
-	github.com/stretchr/testify v1.8.1
-	github.com/yuin/goldmark v1.5.4
+	github.com/stretchr/testify v1.8.4
+	github.com/yuin/goldmark v1.5.5
 	gopkg.in/yaml.v3 v3.0.1
 )
 
