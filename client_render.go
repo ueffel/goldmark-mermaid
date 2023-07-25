@@ -51,9 +51,9 @@ func (r *ClientRenderer) Render(w util.BufWriter, src []byte, node ast.Node, ent
 
 	n := node.(*Block)
 	if entering {
-		w.WriteString("<")
+		_, _ = w.WriteString("<")
 		template.HTMLEscape(w, []byte(tag))
-		w.WriteString(` class="mermaid">`)
+		_, _ = w.WriteString(` class="mermaid">`)
 
 		lines := n.Lines()
 		for i := 0; i < lines.Len(); i++ {
@@ -61,9 +61,9 @@ func (r *ClientRenderer) Render(w util.BufWriter, src []byte, node ast.Node, ent
 			template.HTMLEscape(w, line.Value(src))
 		}
 	} else {
-		w.WriteString("</")
+		_, _ = w.WriteString("</")
 		template.HTMLEscape(w, []byte(tag))
-		w.WriteString(">")
+		_, _ = w.WriteString(">")
 	}
 	return ast.WalkContinue, nil
 }
@@ -74,19 +74,19 @@ func (r *ClientRenderer) RenderScript(w util.BufWriter, _ []byte, node ast.Node,
 	if entering {
 		mermaidJS := r.MermaidJS
 		if mermaidJS == "<embed>" {
-			w.WriteString(`<script>`)
-			w.Write(mermaidJSEmbedded)
-			w.WriteString(`</script>`)
+			_, _ = w.WriteString(`<script>`)
+			_, _ = w.Write(mermaidJSEmbedded)
+			_, _ = w.WriteString(`</script>`)
 		} else {
 			if len(mermaidJS) == 0 {
 				mermaidJS = defaultMermaidJS
 			}
-			w.WriteString(`<script src="`)
-			w.WriteString(mermaidJS)
-			w.WriteString(`"></script>`)
+			_, _ = w.WriteString(`<script src="`)
+			_, _ = w.WriteString(mermaidJS)
+			_, _ = w.WriteString(`"></script>`)
 		}
 	} else {
-		w.WriteString("<script>mermaid.initialize({startOnLoad: true});</script>")
+		_, _ = w.WriteString("<script>mermaid.initialize({startOnLoad: true});</script>")
 	}
 
 	return ast.WalkContinue, nil
