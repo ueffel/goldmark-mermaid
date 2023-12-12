@@ -25,7 +25,7 @@ type ClientRenderer struct {
 	//
 	// Defaults to the latest version available on cdn.jsdelivr.net.
 	// "<embed>" uses the embedded source file
-	MermaidJS string
+	MermaidURL string
 
 	// ContainerTag is the name of the HTML tag to use for the container
 	// that holds the Mermaid diagram.
@@ -72,7 +72,7 @@ func (r *ClientRenderer) Render(w util.BufWriter, src []byte, node ast.Node, ent
 func (r *ClientRenderer) RenderScript(w util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	_ = node.(*ScriptBlock) // sanity check
 	if entering {
-		mermaidJS := r.MermaidJS
+		mermaidJS := r.MermaidURL
 		if mermaidJS == "<embed>" {
 			_, _ = w.WriteString(`<script>`)
 			_, _ = w.Write(mermaidJSEmbedded)
